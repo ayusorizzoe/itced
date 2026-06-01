@@ -4,16 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ayusorizzoe</title>
+    <title>Ayuso Rizzo E</title>
     <link rel="stylesheet" href="styles.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
     <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
         rel="stylesheet">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="main.js" defer></script>
     <link rel="icon" href="favicon.ico?v=2">
 </head>
@@ -28,103 +26,54 @@
                 <button id="closeButton" class="closeButton">Close</button>
             </div>
         </div>
-
         <img class="bouncingImg" src="./images/huhGreen.png" alt="" aria-hidden="true">
         <div class="cursor"></div>
-        <div class="timeContainer">
-            <div class="clock">
-                <h4>
-                    <span class="date"></span>
-                    &nbsp;|&nbsp;
-                    <span class="hrs">00</span>
-                    <span>:</span>
-                    <span class="min">00</span>
-                    <span>:</span>
-                    <span class="sec">00</span>
-                    <span class="ampm">AM</span>
-                </h4>
+        <div class="glassPanel">
+            <div class="timeContainer">
+                <div class="clock">
+                    <h4>
+                        <span class="date"></span>
+                        &nbsp;|&nbsp;
+                        <span class="hrs">00</span>:<span class="min">00</span>:<span class="sec">00</span>
+                        <span class="ampm">AM</span>
+                    </h4>
+                </div>
             </div>
+            <div class="headerContainer">
+                <header>
+                    <h1 class="animatedHeader">e AYUSO RIZZO | AYUSORIZZOE@GMAIL.COM | @AYUSORIZZOE | AYUSORIZZOE.COM
+                        |&nbsp;</h1>
+                    <h1 class="animatedHeader">e AYUSO RIZZO | AYUSORIZZOE@GMAIL.COM | @AYUSORIZZOE | AYUSORIZZOE.COM
+                        |&nbsp;</h1>
+                </header>
+            </div>
+            <nav class="navContainer">
+                <a href="about.html">About</a>
+                <a href="index.html" class="active" aria-current="page">Work</a>
+                <a href="exhibitions.html">Exhibitions</a>
+                <a href="log.html">Log</a>
+            </nav>
         </div>
-        <header>
-            <h1 class="animatedHeader"> EDUARDO AYUSO RIZZO | ED | EAYUSORI@RISD.EDU | @IAMAYUSO__ | AYUSORIZZOE.COM
-                |&nbsp; </h1>
-            <h1 class="animatedHeader"> EDUARDO AYUSO RIZZO | ED | EAYUSORI@RISD.EDU | @IAMAYUSO__ | AYUSORIZZOE.COM
-                |&nbsp; </h1>
-        </header>
-        <div class="navContainer">
-            <a href="about.html">About</a>
-            <a href="index.html" class="active" aria-current="page">Work</a>
-            <a href="exhibitions.html">Exhibitions</a>
-            <a href="graphics.html">Graphics</a>
-        </div>
-        <div class="workContainer">
-            <div class="empty"></div>
-            <div>
-                <a href="01.html" class="workButton" data-img="./images/sanctTN.png">
-                    <h3 data-hover="Sanct">1</h3>
-                </a>
-            </div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div>
-                <a href="02.html" class="workButton" data-img="./images/ossuaryTN.png">
-                    <h3 data-hover="Ossuary">2</h3>
-                </a>
-            </div>
-            <div>
-                <a href="03.html" class="workButton" data-img="./images/relicTN.png">
-                    <h3 data-hover="Relic For No Shrine">3</h3>
-                </a>
-            </div>
-            <div class="empty"></div>
-
-            <div>
-                <a href="04.html" class="workButton" data-img="./images/hangoutTN.png">
-                    <h3 data-hover="Hangout">4</h3>
-                </a>
-            </div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div>
-                <a href="05.html" class="workButton" data-img="./images/marsTN.png">
-                    <h3 data-hover="MARS">5</h3>
-                </a>
-            </div>
-
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div>
-                <a href="06.html" class="workButton" data-img="./images/m+TN.png">
-                    <h3 data-hover="M+ Asset">6</h3>
-                </a>
-            </div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div>
-                <a href="07.html" class="workButton" data-img="./images/abyssTN.png">
-                    <h3 data-hover="Abyss">7</h3>
-                </a>
-            </div>
-            <div class="empty"></div>
-        </div>
+        <canvas id="threeCanvas"></canvas>
     </main>
     <footer>
         <div class="staticFooter">
             <div class="staticFooterContent">
-                <a href="mailto:ayusorizzoe@gmail.com">Contact</a> |
-                <a href="https://www.linkedin.com/in/ed-ayuso-rizzo-845a601b7/" target="_blank">LinkedIn</a>
+                <div class="footerLeft">
+                    <a href="mailto:ayusorizzoe@gmail.com">Contact</a>
+                    <span class="footerSep">|</span>
+                    <a href="https://www.linkedin.com/in/ed-ayuso-rizzo-845a601b7/" target="_blank">LinkedIn</a>
+                </div>
             </div>
         </div>
-        <h4 class="animatedFooter"> Copyright © 2026. All rights reserved. </h4>
+        <div class="animatedFooterWrap">
+            <div class="animatedFooterTrack">
+                <h4 class="animatedFooter">SITE IS ALWAYS IN DEVELOPMENT | ©2026 ALL RIGHTS RESERVED | SITE IS ALWAYS IN
+                    DEVELOPMENT | ©2026 ALL RIGHTS RESERVED |&nbsp;</h4>
+                <h4 class="animatedFooter">SITE IS ALWAYS IN DEVELOPMENT | ©2026 ALL RIGHTS RESERVED | SITE IS ALWAYS IN
+                    DEVELOPMENT | ©2026 ALL RIGHTS RESERVED |&nbsp;</h4>
+            </div>
+        </div>
     </footer>
 </body>
 
