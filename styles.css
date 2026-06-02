@@ -340,8 +340,9 @@ header:hover .animatedHeader {
     }
 }
 
-.animatedHeader a {
-    color: inherit;
+.animatedHeader a,
+.animatedHeader a:visited {
+    color: inherit !important;
     text-decoration: none;
 }
 
@@ -990,12 +991,24 @@ footer {
 
 .projectGridContainer.grid-auto {
     grid-auto-rows: auto;
-    overflow: hidden;
+    align-items: start;
+}
+
+.projectGridContainer.grid-auto>div {
+    display: flex;
+    flex-direction: column;
+    align-self: start;
 }
 
 .projectGridContainer.grid-auto .projectGridImg {
+    width: 100%;
     height: auto;
     object-fit: contain;
+    flex-shrink: 0;
+}
+
+.projectGridContainer.grid-auto>div img {
+    flex: unset;
 }
 
 /* ─── GRAPHICS SECTION ───────────────────────────────────────── */
@@ -1214,10 +1227,10 @@ footer {
 }
 
 .archiveIntro {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.8rem;
-  font-weight: 200;
-  color: #888;
-  margin-bottom: 1.5rem;
-  font-style: italic;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    font-weight: 200;
+    color: #888;
+    margin-bottom: 1.5rem;
+    font-style: italic;
 }
