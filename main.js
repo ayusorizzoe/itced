@@ -136,6 +136,79 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// ─── IMAGE SLIDER ───────────────────────────────────────────────────────────────
+
+(function initSlider() {
+  const slider = document.querySelector('.imgSlider');
+  const track = slider?.querySelector('.track');
+  if (!slider || !track) return;
+
+  const totalSlides = track.children.length;
+  let currentX = 0;
+  let targetX = 0;
+  let autoSpeed = -0.5;
+  let isDragging = false;
+  let startX = 0;
+  let dragStartX = 0;
+  let isPaused = false;
+  let pauseTimeout;
+  let rafId;
+
+  function getMaxScroll() {
+    return -(track.scrollWidth - slider.offsetWidth);
+  }
+
+  function tick() {
+    if (!isDragging && !isPaused) {
+      targetX += autoSpeed;
+      if (targetX <= getMaxScroll()) {
+        targetX = 0;
+      }
+    }
+    currentX += (targetX - currentX) * 0.08;
+    track.style.transform = `translateX(${currentX}px)`;
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function pauseAuto(ms) {
+    isPaused = true;
+    clearTimeout(pauseTimeout);
+    pauseTimeout = setTimeout(() => { isPaused = false; }, ms || 2000);
+  }
+
+  slider.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.pageX;
+    dragStartX = targetX;
+    clearTimeout(pauseTimeout);
+    isPaused = true;
+    slider.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const delta = e.pageX - startX;
+    targetX = dragStartX + delta;
+    targetX = Math.min(0, Math.max(getMaxScroll(), targetX));
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    slider.style.cursor = 'grab';
+    pauseAuto(2000);
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    if (isDragging) {
+      isDragging = false;
+      slider.style.cursor = 'grab';
+      pauseAuto(2000);
+    }
+  });
+
+  tick();
+})();
 
 // ─── MISC ─────────────────────────────────────────────────────────────────────
 
@@ -169,32 +242,6 @@ function detectAndShowPopup() {
 
 window.addEventListener("load", detectAndShowPopup);
 
-
-// ─── THEME TOGGLE ─────────────────────────────────────────────────────────────
-
-const themeToggle = document.getElementById("themeToggle");
-
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const isLight = document.body.classList.toggle("light-mode");
-    themeToggle.setAttribute("aria-checked", isLight);
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-  });
-
-  themeToggle.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      themeToggle.click();
-    }
-  });
-
-  if (localStorage.getItem("theme") === "light") {
-    document.body.classList.add("light-mode");
-    themeToggle.setAttribute("aria-checked", "true");
-  }
-}
-
-
 // ─── THREE.JS SPATIAL NAVIGATION ──────────────────────────────────────────────
 
 (function initSpatialNav() {
@@ -210,6 +257,7 @@ if (themeToggle) {
     { href: "07.html", img: "./images/hangoutTN.png", label: "7", hover: "Hangout" },
     { href: "08.html", img: "./images/marsTN.png", label: "8", hover: "MARS" },
   ];
+
   // ── Canvas setup ──────────────────────────────────────────────────────────
 
   const canvas = document.getElementById("threeCanvas");
@@ -237,12 +285,18 @@ if (themeToggle) {
   const camera = new THREE.PerspectiveCamera(50, W() / H(), 0.1, 200);
   camera.position.set(0, 0, 18);
 
+  const getNavMaxY = () => {
+    const vH = 2 * Math.tan((50 * Math.PI / 180) * 0.5) * 18;
+    const navHeight = document.querySelector('.glassPanel')?.offsetHeight || 80;
+    const navWorldUnits = (navHeight / H()) * vH;
+    return (vH * 0.5) - navWorldUnits - 0.8;
+  };
+
   window.addEventListener("resize", () => {
     renderer.setSize(W(), H());
     camera.aspect = W() / H();
     camera.updateProjectionMatrix();
 
-    // Recalculate positions based on new viewport
     const newPositions = randomPositions(projects.length)
       .sort((a, b) => {
         const rowA = Math.round(a.y * 2);
@@ -271,7 +325,9 @@ if (themeToggle) {
     const vWidth = vHeight * aspect;
 
     const xRange = [-(vWidth * 0.42), vWidth * 0.42];
-    const yRange = [-(vHeight * 0.44), vHeight * 0.38];
+    const navHeight = document.querySelector('.glassPanel')?.offsetHeight || 80;
+    const navWorldUnits = (navHeight / H()) * vHeight;
+    const yRange = [-(vHeight * 0.44), (vHeight * 0.5) - navWorldUnits - 0.8];
 
     for (let i = 0; i < count; i++) {
       let pos, attempts = 0;
@@ -402,7 +458,6 @@ if (themeToggle) {
     }
   });
 
-  // Touch support for mobile tap-to-navigate
   canvas.addEventListener("touchend", (e) => {
     const touch = e.changedTouches[0];
     const tx = (touch.clientX / W()) * 2 - 1;
@@ -413,7 +468,6 @@ if (themeToggle) {
     if (hits.length) {
       window.location.href = hits[0].object.userData.project.href;
     }
-    // Reset mouse off-screen after tap
     mouse.set(9999, 9999);
   });
 
@@ -500,6 +554,7 @@ if (themeToggle) {
     const bCx = bounceState.x + bW * 0.5;
     const bCy = bounceState.y + bH * 0.5;
     const ptw = pxToWorld();
+    const maxY = getNavMaxY();
 
     meshes.forEach((mesh, i) => {
       const d = driftParams[i];
@@ -526,7 +581,7 @@ if (themeToggle) {
       repulseOffset[i].y += (targetRY - repulseOffset[i].y) * REPULSE_SMOOTH;
 
       mesh.position.x = driftX + repulseOffset[i].x;
-      mesh.position.y = driftY + repulseOffset[i].y;
+      mesh.position.y = Math.min(driftY + repulseOffset[i].y, maxY);
       mesh.position.z = driftZ;
 
       mesh.rotation.y = smMx * 0.08 + Math.sin(t * d.fx * 0.6 + d.rpx) * d.rrx;
@@ -568,12 +623,10 @@ if (themeToggle) {
 
 // ─── CAROUSEL ────────────────────────────────────────────────────────────────
 
-// reset to first slide on reload
 if (window.location.hash && document.querySelector(window.location.hash)) {
   history.replaceState(null, '', window.location.pathname);
 }
 
-// active thumb class
 function syncActiveThumb() {
   document.querySelectorAll('.carousel').forEach(carousel => {
     const thumbs = carousel.querySelectorAll('.thumb');
@@ -585,7 +638,6 @@ function syncActiveThumb() {
   });
 }
 
-// auto object-fit based on ratio outliers
 function syncImageFit() {
   document.querySelectorAll('.carousel').forEach(carousel => {
     const imgs = carousel.querySelectorAll('.carousel-slide img');
