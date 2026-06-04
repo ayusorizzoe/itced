@@ -150,6 +150,7 @@ hr.styledHr {
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 1;
+  mix-blend-mode: multiply;
 }
 
 .projectPreview.is-visible {
