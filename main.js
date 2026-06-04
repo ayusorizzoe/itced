@@ -168,6 +168,28 @@ function toggleSize(element) {
   element.classList.toggle("expanded");
 }
 
+const indexHint = document.getElementById('indexHint');
+const closeButton = document.getElementById('closeButton');
+
+if (indexHint) {
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+  if (isMobile && closeButton) {
+    closeButton.addEventListener('click', () => {
+      indexHint.classList.add('visible');
+      setTimeout(() => {
+        indexHint.classList.add('fade-out');
+      }, 3000);
+    });
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        indexHint.classList.add('visible');
+      }, 1000);
+    });
+  }
+}
+
 
 // ─── MOBILE POPUP ─────────────────────────────────────────────────────────────
 

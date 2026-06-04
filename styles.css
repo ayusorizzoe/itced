@@ -149,11 +149,40 @@ hr.styledHr {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s ease;
-  z-index: 0;
+  z-index: 1;
 }
 
 .projectPreview.is-visible {
   opacity: 1;
+}
+
+.indexHint {
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 200;
+    color: #888;
+    letter-spacing: 0.1em;
+    font-style: italic;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.indexHint.visible {
+    animation: hintPulse 4s ease forwards;
+}
+
+@keyframes hintPulse {
+    0%   { opacity: 0; }
+    30%  { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 
@@ -453,17 +482,20 @@ header:hover .animatedHeader {
 .closeButton {
     font-family: "IBM Plex Mono", monospace;
     font-size: 0.9rem;
-    font-weight: 400;
+    font-weight: 700;
     padding: 10px 20px;
     border: none;
 }
 
 #closeButton {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background: var(--accent);
-    color: white;
+    margin-top: 1.5rem;
+    padding: 0.6rem 2rem;
     border: none;
+    color: black;
+    background: none;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.85rem;
+    font-weight: 300;
 }
 
 /* ─── WORK GRID ──────────────────────────────────────────────── */
