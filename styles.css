@@ -149,7 +149,7 @@ hr.styledHr {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s ease;
-  z-index: 1;
+  z-index: 0;
 }
 
 .projectPreview.is-visible {
@@ -765,7 +765,6 @@ footer {
     border: 1px solid gainsboro;
     pointer-events: none;
     -webkit-user-drag: none;
-    user-drag: none;
 }
 
 /* ─── LANDSCAPE IMAGE ────────────────────────────────────────── */
