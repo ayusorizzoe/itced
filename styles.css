@@ -373,7 +373,7 @@ header:hover .animatedHeader {
 }
 
 .animatedHeader a:hover {
-    text-decoration: underline dotted;
+    text-decoration: underline;
 }
 
 .navContainer {
