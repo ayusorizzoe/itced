@@ -4,7 +4,7 @@ function updateTime() {
   const now = new Date();
 
   let h = now.getHours();
-  let ampm = h >= 12 ? "PM" : "AM";
+  let ampm = h >= 12 ? "pm" : "am";
   let m = now.getMinutes();
   let s = now.getSeconds();
 
@@ -15,8 +15,8 @@ function updateTime() {
   m = m < 10 ? "0" + m : "" + m;
   s = s < 10 ? "0" + s : "" + s;
 
-  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
   const dateStr = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
 
   document.querySelectorAll(".hrs").forEach(el => (el.textContent = h));
@@ -51,73 +51,6 @@ if (cursor) {
 }
 
 
-// ─── BOUNCING IMAGE ───────────────────────────────────────────────────────────
-
-const bouncingItem = document.querySelector(".bouncingImg");
-let defaultImg = "";
-
-const bounceState = { x: 20, y: 20, vx: 1.5, vy: 1.0 };
-
-if (bouncingItem) {
-  const bounceImgs = [
-    "./images/huhBlue.png",
-    "./images/huhGreen.png",
-    "./images/huhYellow.png",
-    "./images/huhPink.png",
-    "./images/huhLBlue.png",
-  ];
-
-  bounceImgs.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-
-  defaultImg = bouncingItem.src;
-
-  function setRandomBounceImage() {
-    const current = bouncingItem.getAttribute("src");
-    const options = bounceImgs.filter((s) => s !== current);
-    const next = options[Math.floor(Math.random() * options.length)];
-    bouncingItem.src = next;
-    defaultImg = next;
-  }
-
-  function bounceAnimation() {
-    const w = bouncingItem.offsetWidth;
-    const h = bouncingItem.offsetHeight;
-
-    bounceState.x += bounceState.vx;
-    bounceState.y += bounceState.vy;
-
-    let bounced = false;
-
-    if (bounceState.x <= 0 || bounceState.x >= window.innerWidth - w) {
-      bounceState.vx *= -1;
-      bounced = true;
-    }
-    if (bounceState.y <= 0 || bounceState.y >= window.innerHeight - h) {
-      bounceState.vy *= -1;
-      bounced = true;
-    }
-
-    bounceState.x = Math.min(Math.max(bounceState.x, 0), window.innerWidth - w);
-    bounceState.y = Math.min(Math.max(bounceState.y, 0), window.innerHeight - h);
-
-    if (bounced && !bouncingItem.classList.contains("is-hovering")) {
-      setRandomBounceImage();
-    }
-
-    bouncingItem.style.transform = `translate(${bounceState.x}px, ${bounceState.y}px)`;
-    requestAnimationFrame(bounceAnimation);
-  }
-
-  setTimeout(() => {
-    bouncingItem.classList.add("active");
-    bounceAnimation();
-  }, 1000);
-}
-
-
 // ─── CAROUSEL ─────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -136,14 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ─── IMAGE SLIDER ───────────────────────────────────────────────────────────────
+/// ─── IMAGE SLIDER ───────────────────────────────────────────────────────────────
 
 (function initSlider() {
   const slider = document.querySelector('.imgSlider');
   const track = slider?.querySelector('.track');
   if (!slider || !track) return;
 
-  const totalSlides = track.children.length;
   let currentX = 0;
   let targetX = 0;
   let autoSpeed = -0.5;
@@ -152,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let dragStartX = 0;
   let isPaused = false;
   let pauseTimeout;
-  let rafId;
 
   function getMaxScroll() {
     return -(track.scrollWidth - slider.offsetWidth);
@@ -167,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     currentX += (targetX - currentX) * 0.08;
     track.style.transform = `translateX(${currentX}px)`;
-    rafId = requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
   }
 
   function pauseAuto(ms) {
@@ -205,6 +136,27 @@ document.addEventListener("DOMContentLoaded", () => {
       slider.style.cursor = 'grab';
       pauseAuto(2000);
     }
+  });
+
+  slider.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    startX = e.touches[0].pageX;
+    dragStartX = targetX;
+    clearTimeout(pauseTimeout);
+    isPaused = true;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const delta = e.touches[0].pageX - startX;
+    targetX = dragStartX + delta;
+    targetX = Math.min(0, Math.max(getMaxScroll(), targetX));
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    pauseAuto(2000);
   });
 
   tick();
@@ -254,8 +206,7 @@ window.addEventListener("load", detectAndShowPopup);
     { href: "04.html", img: "./images/relicTN.png", label: "4", hover: "Without Kingdom" },
     { href: "05.html", img: "./images/runaTN.png", label: "5", hover: "Runa" },
     { href: "06.html", img: "./images/blueDogTN.png", label: "6", hover: "Eyes of a Blue Dog" },
-    { href: "07.html", img: "./images/hangoutTN.png", label: "7", hover: "Hangout" },
-    { href: "08.html", img: "./images/marsTN.png", label: "8", hover: "MARS" },
+    { href: "07.html", img: "./images/marsTN.png", label: "7", hover: "MARS" },
   ];
 
   // ── Canvas setup ──────────────────────────────────────────────────────────
@@ -309,7 +260,6 @@ window.addEventListener("load", detectAndShowPopup);
       const sp = newPositions[i];
       mesh.position.copy(sp);
       mesh.userData.origPos = sp.clone();
-      repulseOffset[i].set(0, 0, 0);
     });
   });
 
@@ -373,10 +323,6 @@ window.addEventListener("load", detectAndShowPopup);
     rpy: Math.random() * Math.PI * 2,
   }));
 
-  // ── Per-mesh repulsion offset (world units, lerped each frame) ───────────
-
-  const repulseOffset = projects.map(() => new THREE.Vector3());
-
   // ── Textures — number (default) and name (hover) ─────────────────────────
 
   function makeTexture(text, isName) {
@@ -407,6 +353,10 @@ window.addEventListener("load", detectAndShowPopup);
   const NUM_SIZE = 0.50;
   const NAME_WIDTH = 4.2;
   const NAME_HEIGHT = 0.55;
+
+  // ── Project preview element ───────────────────────────────────────────────
+
+  const projectPreview = document.getElementById('projectPreview');
 
   projects.forEach((proj, i) => {
     const numTex = new THREE.CanvasTexture(makeTexture(proj.label, false));
@@ -475,7 +425,7 @@ window.addEventListener("load", detectAndShowPopup);
     if (hoveredMesh) window.location.href = hoveredMesh.userData.project.href;
   });
 
-  // ── Hover ↔ bouncing image + label swap ───────────────────────────────────
+  // ── Hover ↔ preview + label swap ─────────────────────────────────────────
 
   function onProjectHoverEnter(mesh) {
     const { project, glyphMesh, nameTex, NAME_WIDTH, NAME_HEIGHT } = mesh.userData;
@@ -485,9 +435,9 @@ window.addEventListener("load", detectAndShowPopup);
     glyphMesh.geometry.dispose();
     glyphMesh.geometry = new THREE.PlaneGeometry(NAME_WIDTH, NAME_HEIGHT);
 
-    if (bouncingItem) {
-      bouncingItem.src = project.img;
-      bouncingItem.classList.add("is-hovering");
+    if (projectPreview) {
+      projectPreview.style.backgroundImage = `url(${project.img})`;
+      projectPreview.classList.add('is-visible');
     }
     if (cursor) cursor.classList.add("is-hovering");
   }
@@ -500,33 +450,11 @@ window.addEventListener("load", detectAndShowPopup);
     glyphMesh.geometry.dispose();
     glyphMesh.geometry = new THREE.PlaneGeometry(NUM_SIZE, NUM_SIZE);
 
-    if (bouncingItem) {
-      bouncingItem.classList.remove("is-hovering");
-      bouncingItem.src = defaultImg;
+    if (projectPreview) {
+      projectPreview.classList.remove('is-visible');
     }
     if (cursor) cursor.classList.remove("is-hovering");
   }
-
-  // ── Project world pos → screen px (for repulsion calc) ───────────────────
-
-  const _sv = new THREE.Vector3();
-
-  function worldToScreen(mesh) {
-    _sv.setFromMatrixPosition(mesh.matrixWorld);
-    _sv.project(camera);
-    return {
-      x: (_sv.x * 0.5 + 0.5) * W(),
-      y: (_sv.y * -0.5 + 0.5) * H(),
-    };
-  }
-
-  const pxToWorld = () => (2 * Math.tan((50 * Math.PI / 180) * 0.5) * 18) / H();
-
-  // ── Repulsion config ──────────────────────────────────────────────────────
-
-  const REPULSE_RADIUS = 130;
-  const REPULSE_STRENGTH = 4.0;
-  const REPULSE_SMOOTH = 0.07;
 
   // ── Scales ───────────────────────────────────────────────────────────────
 
@@ -549,11 +477,6 @@ window.addEventListener("load", detectAndShowPopup);
     camera.position.y = camY;
     camera.lookAt(0, 0, 0);
 
-    const bW = bouncingItem ? bouncingItem.offsetWidth : 0;
-    const bH = bouncingItem ? bouncingItem.offsetHeight : 0;
-    const bCx = bounceState.x + bW * 0.5;
-    const bCy = bounceState.y + bH * 0.5;
-    const ptw = pxToWorld();
     const maxY = getNavMaxY();
 
     meshes.forEach((mesh, i) => {
@@ -564,24 +487,8 @@ window.addEventListener("load", detectAndShowPopup);
       const driftY = op.y + Math.cos(t * d.fy + d.py) * d.ay;
       const driftZ = op.z + Math.sin(t * d.fz + d.pz) * d.az;
 
-      const sc = worldToScreen(mesh);
-      const dx = sc.x - bCx;
-      const dy = sc.y - bCy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      let targetRX = 0, targetRY = 0;
-
-      if (dist < REPULSE_RADIUS && dist > 0.5) {
-        const force = (1 - dist / REPULSE_RADIUS) * REPULSE_STRENGTH;
-        targetRX = (dx / dist) * force * ptw * 55;
-        targetRY = -(dy / dist) * force * ptw * 55;
-      }
-
-      repulseOffset[i].x += (targetRX - repulseOffset[i].x) * REPULSE_SMOOTH;
-      repulseOffset[i].y += (targetRY - repulseOffset[i].y) * REPULSE_SMOOTH;
-
-      mesh.position.x = driftX + repulseOffset[i].x;
-      mesh.position.y = Math.min(driftY + repulseOffset[i].y, maxY);
+      mesh.position.x = driftX;
+      mesh.position.y = Math.min(driftY, maxY);
       mesh.position.z = driftZ;
 
       mesh.rotation.y = smMx * 0.08 + Math.sin(t * d.fx * 0.6 + d.rpx) * d.rrx;

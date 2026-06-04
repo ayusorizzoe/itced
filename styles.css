@@ -19,7 +19,7 @@ p {
     font-family: "IBM Plex Mono", monospace;
     font-style: normal;
     font-weight: 300;
-    font-size: 1rem;
+    font-size: .8rem;
     color: #666;
     line-height: 1.5;
     margin: 0;
@@ -27,10 +27,10 @@ p {
 
 h1 {
     margin: 0;
-    font-family: "doto";
+    font-family: "IBM Plex Mono";
     color: black;
-    font-size: 3rem;
-    font-weight: 400;
+    font-size: 2rem;
+    font-weight: 100;
 }
 
 h2 {
@@ -52,9 +52,9 @@ h3 {
 }
 
 h4 {
-    font-family: "doto";
-    font-size: 1rem;
-    font-weight: 200;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .8rem;
+    font-weight: 100;
     color: black;
     margin: 0;
 }
@@ -134,30 +134,26 @@ hr.styledHr {
 }
 
 
-/* ─── BOUNCING IMAGE ─────────────────────────────────────────── */
+/* ─── PROJECT PREVIEW ─────────────────────────────────────────── */
 
-.bouncingImg {
-    display: block;
-    width: 6rem;
-    height: 6rem;
-    object-fit: contain;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 1s ease;
-    z-index: 999;
+.projectPreview {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
 }
 
-.bouncingImg.is-hovering {
-    width: 20rem;
-    height: 20rem;
-    z-index: 999;
-}
-
-.bouncingImg.active {
-    opacity: 1;
+.projectPreview.is-visible {
+  opacity: 1;
 }
 
 
@@ -544,15 +540,15 @@ footer {
     display: flex;
     width: max-content;
     white-space: nowrap;
-    animation: slideFooter 22s linear infinite;
-    --from: 0;
-    --to: -20%;
+    animation: slideFooter 30s linear infinite;
 }
 
 .animatedFooter {
+    display: inline-block;
     color: white;
     margin: 0;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .staticFooter {
@@ -567,9 +563,9 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: "doto";
-    font-size: 1rem;
-    font-weight: 300;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    font-weight: 100;
     padding: 4px 0;
 }
 
@@ -590,67 +586,48 @@ footer {
 
 @keyframes slideFooter {
     from {
-        transform: translateX(var(--to));
+        transform: translateX(-50%);
     }
-
     to {
-        transform: translateX(var(--from));
+        transform: translateX(0);
     }
 }
 
 /* ─── ABOUT PAGE ─────────────────────────────────────────────── */
 
-.aboutContainer {
-    width: 97%;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    row-gap: 8rem;
-}
-
-.aboutContainer a {
-    font-family: "IBM Plex Mono", monospace;
-    font-style: normal;
-    font-weight: 300;
-    color: #000;
-    text-decoration: none;
-    background: none;
-    border: none;
-    cursor: none;
-}
-
-.aboutItem,
-.aboutItemMerged {
-    padding: 20px;
-    text-align: left;
-}
-
-.aboutItemMerged {
-    grid-column: span 2;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    align-self: center;
-}
-
-.aboutImg {
-    display: block;
-    width: 6rem;
-    height: 6rem;
-    object-fit: contain;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-
 .subHeadingOffset {
-    margin-left: 2.7%;
     text-align: left;
     min-height: calc(100vh - 100px);
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.aboutSplit {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    width: 92%;
+    align-items: start;
+}
+
+.aboutHalf--left {
+    border-right: 1px solid #f0f0f0;
+    padding-right: 4rem;
+}
+
+@media (max-width: 768px) {
+    .aboutSplit {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .aboutHalf--left {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 2rem;
+    }
 }
 
 /* ─── PROJECTS  ─────────────────────────────────────────────── */
