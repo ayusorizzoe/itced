@@ -43,10 +43,18 @@
                 </header>
             </div>
             <nav class="navContainer" translate="no">
-                <a href="about.html" class="active" aria-current="page">about</a>
-                <a href="/">work</a>
-                <a href="exhibitions.html">exhibitions</a>
-                <a href="log.html">log</a>
+                <a href="about.html" class="active" aria-current="page">
+                    <span class="lang-en">about</span>
+                    <span class="lang-es">perfil</span>
+                </a>
+                <a href="/">
+                    <span class="lang-en">work</span>
+                    <span class="lang-es">trabajo</span>
+                </a>
+                <a href="log.html">
+                    <span class="lang-en">archive</span>
+                    <span class="lang-es">archivo</span>
+                </a>
             </nav>
         </div>
         <div class="subHeadingOffset">
@@ -81,9 +89,36 @@
                         University of Hong Kong.
                     </p>
                 </div>
-                <div class="aboutItemMerged">
-                    <a href="files/ayusorizzoeCV.pdf" class="doc-button" target="_blank">cv</a>
+
+                <div class="aboutItemMerged" style="grid-column: 1 / -1; width: 100%;">
+                    <a href="files/ayusorizzoeCV.pdf" class="doc-button lang-en" target="_blank">cv</a>
+                    <a href="files/ayusorizzoeCV_es.pdf" class="doc-button lang-es" target="_blank">cv</a>
                 </div>
+
+                <!-- ─── EXHIBITIONS ─────────────────────────────────────── -->
+                <div class="aboutItemMerged" style="grid-column: 1 / -1; width: 100%;">
+                    <hr class="styledHr">
+                    <br>
+                    <div class="archiveHint lang-en">click to expand</div>
+                    <div class="archiveHint lang-es">haz clic para expandir</div>
+                    <div class="archiveTable" id="exhibitionTable">
+
+                        <div class="archiveRow" data-index="0" style="grid-template-columns: 1fr;">
+                            <span class="cell cell-title">
+                                <span class="lang-en">exhibitions</span>
+                                <span class="lang-es">exposiciones</span>
+                            </span>
+                        </div>
+                        <div class="archivePanel" id="expanel-0">
+                            <div class="archivePanelInner archivePanelInner--text">
+                                <p class="archiveDescription lang-en">2025 &nbsp;—&nbsp; MID Triennial, Providence, Rhode Island. "as usual."</p>
+                                <p class="archiveDescription lang-es">2025 &nbsp;—&nbsp; Trienal MID, Providence, Rhode Island. "as usual."</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -91,7 +126,10 @@
         <div class="staticFooter">
             <div class="staticFooterContent">
                 <div class="footerLeft">
-                    <a href="mailto:ayusorizzoe@gmail.com">contact</a>
+                    <a href="mailto:ayusorizzoe@gmail.com">
+                        <span class="lang-en">contact</span>
+                        <span class="lang-es">contacto</span>
+                    </a>
                     <span class="footerSep">|</span>
                     <a href="https://www.linkedin.com/in/ed-ayuso-rizzo-845a601b7/" target="_blank">linkedIn</a>
                 </div>
@@ -99,15 +137,34 @@
         </div>
         <div class="animatedFooterWrap">
             <div class="animatedFooterTrack">
-                <h4 class="animatedFooter">site always in development | ©2026 all rights reserved | site always in
-                    development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved
-                    |&nbsp;</h4>
-                <h4 class="animatedFooter">site always in development | ©2026 all rights reserved | site always in
-                    development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved
-                    |&nbsp;</h4>
+                <h4 class="animatedFooter lang-en">site always in development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved |&nbsp;</h4>
+                <h4 class="animatedFooter lang-en">site always in development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved |&nbsp;</h4>
+                <h4 class="animatedFooter lang-es">sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados |&nbsp;</h4>
+                <h4 class="animatedFooter lang-es">sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados |&nbsp;</h4>
             </div>
         </div>
     </footer>
+
+    <script>
+        const exRows = document.querySelectorAll('#exhibitionTable .archiveRow');
+        exRows.forEach(row => {
+            row.addEventListener('click', () => {
+                const idx = row.dataset.index;
+                const panel = document.getElementById('expanel-' + idx);
+                const isOpen = row.classList.contains('is-open');
+
+                document.querySelectorAll('#exhibitionTable .archiveRow.is-open').forEach(r => {
+                    r.classList.remove('is-open');
+                    document.getElementById('expanel-' + r.dataset.index).style.maxHeight = null;
+                });
+
+                if (!isOpen) {
+                    row.classList.add('is-open');
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -20,8 +20,12 @@
     <main>
         <div id="popupOverlay">
             <div id="popupBox">
-                <h3>not optimized for mobile. best experienced on desktop.</h3>
-                <button id="closeButton" class="closeButton">enter →</button>
+                <h3 class="lang-en">not optimized for mobile. best experienced on desktop.</h3>
+                <h3 class="lang-es">no optimizado para móvil. mejor en escritorio.</h3>
+                <button id="closeButton" class="closeButton">
+                    <span class="lang-en">enter →</span>
+                    <span class="lang-es">entrar →</span>
+                </button>
             </div>
         </div>
         <div class="cursor"></div>
@@ -33,7 +37,7 @@
                         <span class="date"></span>
                         &nbsp;|&nbsp;
                         <span class="hrs">00</span>:<span class="min">00</span>:<span class="sec">00</span>
-                        <span class="ampm">AM</span>
+                        <span class="ampm"></span>
                     </h4>
                 </div>
             </div>
@@ -49,12 +53,23 @@
                             href="https://ayusorizzoe.com">ayusorizzoe.com</a> |&nbsp;</h1>
                 </header>
             </div>
-            <div class="indexHint" id="indexHint">click a number to explore</div>
+            <div class="indexHint" id="indexHint">
+                <span class="lang-en">click a number to explore</span>
+                <span class="lang-es">haz clic en un número para explorar</span>
+            </div>
             <nav class="navContainer" translate="no">
-                <a href="about.html">about</a>
-                <a href="/" class="active" aria-current="page">work</a>
-                <a href="exhibitions.html">exhibitions</a>
-                <a href="log.html">log</a>
+                <a href="about.html">
+                    <span class="lang-en">about</span>
+                    <span class="lang-es">perfil</span>
+                </a>
+                <a href="/" class="active" aria-current="page">
+                    <span class="lang-en">work</span>
+                    <span class="lang-es">trabajo</span>
+                </a>
+                <a href="log.html">
+                    <span class="lang-en">archive</span>
+                    <span class="lang-es">archivo</span>
+                </a>
             </nav>
         </div>
         <canvas id="threeCanvas"></canvas>
@@ -63,7 +78,10 @@
         <div class="staticFooter">
             <div class="staticFooterContent">
                 <div class="footerLeft">
-                    <a href="mailto:ayusorizzoe@gmail.com">contact</a>
+                    <a href="mailto:ayusorizzoe@gmail.com">
+                        <span class="lang-en">contact</span>
+                        <span class="lang-es">contacto</span>
+                    </a>
                     <span class="footerSep">|</span>
                     <a href="https://www.linkedin.com/in/ed-ayuso-rizzo-845a601b7/" target="_blank">linkedIn</a>
                 </div>
@@ -71,11 +89,17 @@
         </div>
         <div class="animatedFooterWrap">
             <div class="animatedFooterTrack">
-                <h4 class="animatedFooter">site always in development | ©2026 all rights reserved | site always in
+                <h4 class="animatedFooter lang-en">site always in development | ©2026 all rights reserved | site always in
                     development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved
                     |&nbsp;</h4>
-                <h4 class="animatedFooter">site always in development | ©2026 all rights reserved | site always in
+                <h4 class="animatedFooter lang-en">site always in development | ©2026 all rights reserved | site always in
                     development | ©2026 all rights reserved | site always in development | ©2026 all rights reserved
+                    |&nbsp;</h4>
+                <h4 class="animatedFooter lang-es">sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo
+                    | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados
+                    |&nbsp;</h4>
+                <h4 class="animatedFooter lang-es">sitio siempre en desarrollo | ©2026 todos los derechos reservados | sitio siempre en desarrollo
+                    | ©2026 todos los derechos reservados | sitio siempre en desarrollo | ©2026 todos los derechos reservados
                     |&nbsp;</h4>
             </div>
         </div>

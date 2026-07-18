@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/// ─── IMAGE SLIDER ───────────────────────────────────────────────────────────────
+// ─── IMAGE SLIDER ─────────────────────────────────────────────────────────────
 
 (function initSlider() {
   const slider = document.querySelector('.imgSlider');
@@ -214,7 +214,62 @@ function detectAndShowPopup() {
   });
 }
 
-window.addEventListener("load", detectAndShowPopup);
+
+// ─── LANGUAGE ─────────────────────────────────────────────────────────────────
+
+function applyLang(lang) {
+  if (lang === 'es') {
+    document.body.classList.add('es');
+  } else {
+    document.body.classList.remove('es');
+  }
+}
+
+function initLangPopup() {
+  // apply saved session lang immediately on every page
+  const saved = sessionStorage.getItem('lang');
+  if (saved) {
+    applyLang(saved);
+    detectAndShowPopup();
+    return;
+  }
+
+  // first visit this session — show lang picker
+  const overlay = document.createElement('div');
+  overlay.id = 'langPopupOverlay';
+  overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.20);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);justify-content:center;align-items:center;z-index:10001;';
+
+  overlay.innerHTML = `
+    <div style="text-align:center;">
+      <h3 style="font-family:'IBM Plex Mono',monospace;font-weight:300;font-size:1.2rem;color:#404040;margin:0 0 1.5rem;">select your language</h3>
+      <div style="display:flex;gap:1rem;justify-content:center;">
+        <button id="pickEn" style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;font-weight:300;padding:0.6rem 2rem;border:none;color:black;background:none;animation:blink 1.2s ease-in-out infinite;cursor:none;">english</button>
+        <button id="pickEs" style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;font-weight:300;padding:0.6rem 2rem;border:none;color:black;background:none;animation:blink 1.2s ease-in-out infinite;cursor:none;">español</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('pickEn').addEventListener('click', () => {
+    sessionStorage.setItem('lang', 'en');
+    applyLang('en');
+    overlay.remove();
+    detectAndShowPopup();
+  });
+
+  document.getElementById('pickEs').addEventListener('click', () => {
+    sessionStorage.setItem('lang', 'es');
+    applyLang('es');
+    overlay.remove();
+    detectAndShowPopup();
+  });
+}
+
+window.addEventListener('load', initLangPopup);
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 
 // ─── THREE.JS SPATIAL NAVIGATION ──────────────────────────────────────────────
 
@@ -230,8 +285,6 @@ window.addEventListener("load", detectAndShowPopup);
     { href: "06.html", img: "./images/blueDogTN.png", label: "6", hover: "Eyes of a Blue Dog" },
     { href: "07.html", img: "./images/marsTN.png", label: "7", hover: "MARS" },
   ];
-
-  // ── Canvas setup ──────────────────────────────────────────────────────────
 
   const canvas = document.getElementById("threeCanvas");
   if (!canvas) return;
@@ -285,8 +338,6 @@ window.addEventListener("load", detectAndShowPopup);
     });
   });
 
-  // ── Random non-overlapping scatter positions ───────────────────────────────
-
   function randomPositions(count) {
     const positions = [];
     const minDist = 2.2;
@@ -327,8 +378,6 @@ window.addEventListener("load", detectAndShowPopup);
       return a.x - b.x;
     });
 
-  // ── Per-mesh drift params ─────────────────────────────────────────────────
-
   const driftParams = projects.map(() => ({
     ax: 0.10 + Math.random() * 0.12,
     ay: 0.08 + Math.random() * 0.10,
@@ -345,8 +394,6 @@ window.addEventListener("load", detectAndShowPopup);
     rpy: Math.random() * Math.PI * 2,
   }));
 
-  // ── Textures — number (default) and name (hover) ─────────────────────────
-
   function makeTexture(text, isName) {
     const cvs = document.createElement("canvas");
     cvs.width = isName ? 768 : 96;
@@ -361,8 +408,6 @@ window.addEventListener("load", detectAndShowPopup);
     return cvs;
   }
 
-  // ── Meshes ────────────────────────────────────────────────────────────────
-
   const cardGroup = new THREE.Group();
   scene.add(cardGroup);
 
@@ -375,8 +420,6 @@ window.addEventListener("load", detectAndShowPopup);
   const NUM_SIZE = 0.50;
   const NAME_WIDTH = 4.2;
   const NAME_HEIGHT = 0.55;
-
-  // ── Project preview element ───────────────────────────────────────────────
 
   const projectPreview = document.getElementById('projectPreview');
 
@@ -414,8 +457,6 @@ window.addEventListener("load", detectAndShowPopup);
     meshes.push(hitMesh);
   });
 
-  // ── Mouse / touch tracking ────────────────────────────────────────────────
-
   let rawMx = 0, rawMy = 0;
   let smMx = 0, smMy = 0;
   let camX = 0, camY = 0;
@@ -447,8 +488,6 @@ window.addEventListener("load", detectAndShowPopup);
     if (hoveredMesh) window.location.href = hoveredMesh.userData.project.href;
   });
 
-  // ── Hover ↔ preview + label swap ─────────────────────────────────────────
-
   function onProjectHoverEnter(mesh) {
     const { project, glyphMesh, nameTex, NAME_WIDTH, NAME_HEIGHT } = mesh.userData;
 
@@ -478,12 +517,8 @@ window.addEventListener("load", detectAndShowPopup);
     if (cursor) cursor.classList.remove("is-hovering");
   }
 
-  // ── Scales ───────────────────────────────────────────────────────────────
-
   const normScale = new THREE.Vector3(1, 1, 1);
   const hoverScale = new THREE.Vector3(1.0, 1.0, 1.0);
-
-  // ── Render loop ───────────────────────────────────────────────────────────
 
   let t = 0;
 
@@ -592,3 +627,23 @@ window.addEventListener('load', () => {
   syncImageFit();
 });
 window.addEventListener('hashchange', syncActiveThumb);
+
+// ─── SCROLL REVEAL ────────────────────────────────────────────────────────────
+
+(function initScrollReveal() {
+  const targets = document.querySelectorAll('.mySlider, .projectGridImg, .landscapeImg');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  targets.forEach(el => {
+    el.classList.add('will-reveal');
+    observer.observe(el);
+  });
+})();

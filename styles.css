@@ -137,24 +137,24 @@ hr.styledHr {
 /* ─── PROJECT PREVIEW ─────────────────────────────────────────── */
 
 .projectPreview {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 1;
-  mix-blend-mode: multiply;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 1;
+    mix-blend-mode: multiply;
 }
 
 .projectPreview.is-visible {
-  opacity: 1;
+    opacity: 1;
 }
 
 .indexHint {
@@ -164,14 +164,14 @@ hr.styledHr {
     transform: translateX(-50%);
     white-space: nowrap;
     font-family: "IBM Plex Mono", monospace;
-    font-size: 0.75rem;
+    font-size: 1.1rem;
     font-weight: 200;
     color: #888;
     letter-spacing: 0.1em;
     font-style: italic;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 2s ease;
     z-index: 10;
 }
 
@@ -180,10 +180,21 @@ hr.styledHr {
 }
 
 @keyframes hintPulse {
-    0%   { opacity: 0; }
-    30%  { opacity: 1; }
-    70%  { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 
@@ -380,7 +391,7 @@ header:hover .animatedHeader {
     width: 100%;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     box-sizing: border-box;
     border-bottom: 1px solid rgba(160, 160, 160, 0.45);
 }
@@ -394,7 +405,6 @@ header:hover .animatedHeader {
     width: 100%;
     text-align: center;
     box-sizing: border-box;
-
     font-family: "IBM Plex Mono", monospace;
     font-style: normal;
     font-weight: 100;
@@ -417,14 +427,6 @@ header:hover .animatedHeader {
     box-sizing: border-box;
     right: -4px;
     bottom: -4px;
-}
-
-.navContainer a:last-child {
-    border-right: none;
-}
-
-.navContainer a:last-child::after {
-    display: none;
 }
 
 .navContainer a::before {
@@ -453,7 +455,6 @@ header:hover .animatedHeader {
     opacity: 1;
 }
 
-
 /* ─── POPUP ──────────────────────────────────────────────────── */
 
 #popupOverlay {
@@ -472,7 +473,6 @@ header:hover .animatedHeader {
 }
 
 #popupBox {
-    background: rgba(255, 255, 255, 0.20);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     padding: 20px;
@@ -497,6 +497,19 @@ header:hover .animatedHeader {
     font-family: "IBM Plex Mono", monospace;
     font-size: 0.85rem;
     font-weight: 300;
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 /* ─── WORK GRID ──────────────────────────────────────────────── */
@@ -621,6 +634,7 @@ footer {
     from {
         transform: translateX(-50%);
     }
+
     to {
         transform: translateX(0);
     }
@@ -830,7 +844,7 @@ footer {
     text-decoration: none;
     background: none;
     border: none;
-    transition: color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, letter-spacing 0.15s ease;
     display: inline-block;
     transform-origin: left center;
 }
@@ -841,7 +855,7 @@ footer {
     font-weight: 700;
     background-color: #39FF14;
     text-decoration: none;
-    transform: scaleX(0.8);
+    letter-spacing: -0.05em;
 }
 
 /* ─── CAROUSEL ───────────────────────────────────────────────────────────────── */
@@ -1243,3 +1257,29 @@ footer {
     margin-bottom: 1.5rem;
     font-style: italic;
 }
+
+/* ─── SCROLL REVEAL ──────────────────────────────────────────────────────────── */
+
+.will-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.will-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── LANGUAGE TOGGLE ────────────────────────────────────────────────────────── */
+ 
+.lang-es { display: none; }
+.lang-en { display: inline; }
+body.es .lang-es { display: inline; }
+body.es .lang-en { display: none; }
+ 
+/* for block-level elements like h3, p, h4 */
+h3.lang-es, p.lang-es, h4.lang-es { display: none; }
+h3.lang-en, p.lang-en, h4.lang-en { display: block; }
+body.es h3.lang-es, body.es p.lang-es, body.es h4.lang-es { display: block; }
+body.es h3.lang-en, body.es p.lang-en, body.es h4.lang-en { display: none; }
