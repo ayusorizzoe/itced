@@ -89,7 +89,8 @@
                 <div class="archivePanel" id="panel-0">
                     <div class="archivePanelInner">
                         <div style="padding:56.25% 0 0 0;position:relative;">
-                            <iframe src="./shaders/cfgi_W3_Em.html" frameborder="0" allow="camera"
+                            <!-- data-src instead of src: loaded on click so the camera prompt only appears when opened -->
+                            <iframe data-src="./shaders/cfgi_W3_Em.html" frameborder="0" allow="camera"
                                 style="position:absolute;top:0;left:0;width:100%;height:100%;"
                                 title="Mirror"></iframe>
                         </div>
@@ -367,14 +368,20 @@
                 const panel = document.getElementById('panel-' + idx);
                 const isOpen = row.classList.contains('is-open');
 
+                // close everything, and unload any lazy iframes (stops camera)
                 document.querySelectorAll('.archiveRow.is-open').forEach(r => {
                     r.classList.remove('is-open');
                     const p = document.getElementById('panel-' + r.dataset.index);
                     p.style.maxHeight = null;
+                    p.querySelectorAll('iframe[data-src]').forEach(f => f.removeAttribute('src'));
                 });
 
                 if (!isOpen) {
                     row.classList.add('is-open');
+                    // load lazy iframes only now, so the camera prompt appears on click
+                    panel.querySelectorAll('iframe[data-src]').forEach(f => {
+                        f.src = f.dataset.src;
+                    });
                     panel.style.maxHeight = panel.scrollHeight + 'px';
                 }
             });
