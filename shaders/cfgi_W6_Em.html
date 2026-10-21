@@ -26,28 +26,16 @@
             gap: 1rem;
         }
 
-        .glow-text {
-            position: relative;
-            isolation: isolate;
-            font-size: 2rem;
-            letter-spacing: 0.05em;
-            color: #f2f2f2;
-            text-align: center;
-        }
-
-        .glow-text::before {
-            content: attr(data-text);
-            position: absolute;
-            inset: 0;
-            color: #f2f2f2;
-            filter: blur(8px);
-            z-index: -1;
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         #volume-slider {
             -webkit-appearance: none;
             appearance: none;
-            width: min(400px, 80vw);
+            width: min(400px, 60vw);
             height: 6px;
             border-radius: 3px;
             background: #f2f2f2;
@@ -87,13 +75,25 @@
         }
 
         #start-btn {
+            flex: none;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: transparent;
             color: #f2f2f2;
             border: 1px solid #f2f2f2;
-            padding: 0.5rem 1.5rem;
             border-radius: 4px;
             cursor: pointer;
             box-shadow: 0 0 8px rgba(242, 242, 242, 0.5);
+        }
+
+        #start-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
         }
 
         #start-btn:disabled {
@@ -105,11 +105,16 @@
 
 <body>
     <audio id="audio-player" src="crowd.mp3"></audio>
-    <button id="start-btn">Start</button>
 
     <div class="volume-container">
-        <div class="glow-text" data-text='scream to make it "quiet"'>scream to make it "quiet"</div>
-        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" disabled>
+        <div class="controls">
+            <button id="start-btn" aria-label="Play">
+                <svg viewBox="0 0 24 24" aria-hidden="true"> 
+                    <path d="M6 4l14 8-14 8z"></path>
+                </svg>
+            </button>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" disabled>
+        </div>
         <span id="volume-value">100%</span>
     </div>
 
