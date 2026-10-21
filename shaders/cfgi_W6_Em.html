@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume Slider</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* NEW: overlay that sits on top of the canvas and centers the UI */
+        .ui {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            font-family: system-ui, sans-serif;
+            color: #f2f2f2;
+            pointer-events: none;   /* lets mouse movement pass through to the shader */
+        }
+
+        .volume-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .glow-text {
+            position: relative;
+            isolation: isolate;     /* NEW: keeps the blurred copy behind the text but above the canvas */
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+            color: #f2f2f2;
+            text-align: center;
+        }
+
+        .glow-text::before {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            color: #f2f2f2;
+            filter: blur(8px);
+            z-index: -1;
+        }
+
+        #volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: min(400px, 80vw);
+            height: 6px;
+            border-radius: 3px;
+            background: #f2f2f2;
+            box-shadow: 0 0 8px rgba(242, 242, 242, 0.9), 0 0 20px rgba(242, 242, 242, 0.5);
+            opacity: 1;
+            outline: none;
+        }
+
+        #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #f2f2f2;
+            box-shadow: 0 0 8px #f2f2f2, 0 0 24px rgba(242, 242, 242, 0.6);
+        }
+
+        #volume-slider::-moz-range-track {
+            height: 6px;
+            border-radius: 3px;
+            background: #f2f2f2;
+        }
+
+        #volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: 50%;
+            background: #f2f2f2;
+            box-shadow: 0 0 10px #f2f2f2, 0 0 24px rgba(242, 242, 242, 0.6);
+        }
+
+        #volume-value {
+            text-shadow: 0 0 8px rgba(242, 242, 242, 0.8);
+            color: #f2f2f2;
+        }
+
+        #start-btn {
+            pointer-events: auto;   /* NEW: the overlay ignores the mouse, so the button must opt back in */
+            background: transparent;
+            color: #f2f2f2;
+            border: 1px solid #f2f2f2;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(242, 242, 242, 0.5);
+        }
+
+        #start-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Shader background -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- UI overlay -->
+    <div class="ui">
+        <audio id="audio-player" src="shaders/crowd.mp3"></audio>
+        <button id="start-btn">Start</button>
+
+        <div class="volume-container">
+            <div class="glow-text" data-text='scream to make it "quiet"'>scream to make it "quiet"</div>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" disabled>
+            <span id="volume-value">100%</span>
+        </div>
+    </div>
+
+    <!-- Shader script -->
+    <script>
+        const canvas = document.querySelector('#gl-canvas');
+        const gl = canvas.getContext('webgl');
+
+        if (!gl) {
+            alert('WebGL not supported!');
+        }
+
+        const mouse = { x: 0, y: 0 };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = window.innerHeight - e.clientY;
+        });
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const vsSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+
+        const fsSource = `
+            precision mediump float;
+            uniform vec2 u_resolution;
+            uniform float u_time;
+            uniform vec2 u_mouse;
+
+            void main() {
+                vec2 st = gl_FragCoord.xy / u_resolution;
+                vec2 normMouse = u_mouse / u_resolution;
+
+                float r = st.x * normMouse.x;
+                float g = st.y * normMouse.y;
+                float b = abs(sin(u_time));
+
+                // The 0.25 darkens the shader so the light text stays readable
+                gl_FragColor = vec4(vec3(r, g, b) * 0.25, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        const positions = new Float32Array([
+            -1, -1,
+             1, -1,
+            -1,  1,
+            -1,  1,
+             1, -1,
+             1,  1,
+        ]);
+        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, "a_position");
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+        const timeLocation = gl.getUniformLocation(program, "u_time");
+        const mouseLocation = gl.getUniformLocation(program, "u_mouse");
+
+        let startTime = Date.now();
+        function render() {
+            let currentTime = (Date.now() - startTime) * 0.001;
+
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, currentTime);
+            gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        render();
+    </script>
+
+    <!-- Volume script (unchanged) -->
+    <script>
+        const audio = document.getElementById('audio-player');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeValue = document.getElementById('volume-value');
+        const startBtn = document.getElementById('start-btn');
+
+        audio.volume = 1;
+
+        const quietT = 0.20;
+        const screamM = 0.80;
+        const recovery = 0.002;
+
+        let currentVolume = 1;
+
+        function setVolume(v) {
+            currentVolume = Math.min(1, Math.max(0, v));
+            audio.volume = currentVolume;
+            volumeSlider.value = currentVolume;
+            volumeValue.textContent = `${Math.round(currentVolume * 100)}%`;
+        }
+
+        startBtn.addEventListener('click', async () => {
+            const cntx = new AudioContext();
+            await cntx.resume();
+
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+            });
+
+            const source = cntx.createMediaStreamSource(stream);
+            const analyser = cntx.createAnalyser();
+            analyser.fftSize = 1024;
+            source.connect(analyser);
+            const buff = new Float32Array(analyser.fftSize);
+
+            audio.play();
+            startBtn.disabled = true;
+
+            function tick() {
+                analyser.getFloatTimeDomainData(buff);
+
+                let total = 0;
+                for (const s of buff) total += Math.abs(s);
+                const loudness = total / buff.length;
+
+                const scream = Math.min(1, Math.max(0, (loudness - quietT) / (screamM - quietT)));
+                const target = 1 - scream;
+
+                if (target < currentVolume) {
+                    setVolume(target);
+                } else {
+                    setVolume(currentVolume + recovery);
+                }
+                requestAnimationFrame(tick);
+            }
+            tick();
+        });
+    </script>
+</body>
+</html>
